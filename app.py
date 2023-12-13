@@ -1,4 +1,5 @@
 from flask import Flask, request
+from flask_smorest import Api, abort
 from db import users
 
 app = Flask(__name__)
@@ -6,6 +7,14 @@ app = Flask(__name__)
 @app.get("/users")
 def get_users():
     return users
+
+
+@app.get("/users/<int:id>")
+def get_especific_user(id):
+    for user in users:
+          if user["id"] == id:
+            return user
+    return {"message": "User not found"}
 
 @app.post("/newusers")
 def create_user():
