@@ -13,3 +13,22 @@ class PlainUserSchema(Schema):
     city = fields.String(required=True)
     profession = fields.String(required=True)
     email = fields.String(required=True )
+
+
+
+#Okay, down hare we find a Schema that will take the incoming data and validate it
+# The big difference between this Schema and the PlainUserSchema is that
+    #this one Will NOT return the datas with the "LOAD_ONLY=TRUE" argument
+    # returning the data just like this:
+    # { "name": "Mary", 
+    #  "city": "São Paulo",
+    # "profession": "Software Engineer",
+    # "email": "Maryemail@.com." }
+class ProfessionalsSchema(Schema):
+    id = fields.Int(load_only=True)
+    name = fields.String(required=True)
+    age = fields.Int(required=True, load_only=True)
+    cpf = fields.String(required=True, load_only=True)
+    city = fields.String(required=True)
+    profession = fields.String(required=True)
+    email = fields.String(required=True)

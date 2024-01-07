@@ -2,7 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from db import db
 from models.users import UsersModel
-from resources.schemas import PlainUserSchema
+from resources.schemas import PlainUserSchema, ProfessionalsSchema
 from sqlalchemy.exc import SQLAlchemyError
 from flask import request
 '''
@@ -101,7 +101,13 @@ class UserById(MethodView):
         return user
         
 
+@blp.route("/professionals/<string:profession>")
+class ProfessionalsSerach(MethodView):
+    @blp.response(200, ProfessionalsSchema(many=True), description="Get all professionals")
+    def get(self, profession):   # Intended to get all professionals listed into the DB
+        all_professionals = UsersModel.query.filter(UsersModel.profession == profession).all()
+        if not all_professionals:
+            abort (404, message="Unfortunately there are no professionals with this profession")
 
-
-
-    
+        else:
+            return all_professionals
