@@ -32,3 +32,10 @@ class ProfessionalsSchema(Schema):
     city = fields.String(required=True)
     profession = fields.String(required=True)
     email = fields.String(required=True)
+
+
+
+class LoginSchema(Schema):
+    id = fields.Int(load_only=True)
+    username = fields.String(required=True)
+    password = fields.String(required=True, load_only=True) #Remember to NEVER return passwords

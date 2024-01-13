@@ -5,6 +5,7 @@ from db import db
 
 
 from resources.users import blp as Userblueprint
+from resources.login import blp as Loginblueprint
 
 def create_app(db_url=None):
     app = Flask(__name__)
@@ -26,7 +27,7 @@ def create_app(db_url=None):
         db.create_all()
 
     api.register_blueprint(Userblueprint)
-
+    api.register_blueprint(Loginblueprint)
     return app
 
 

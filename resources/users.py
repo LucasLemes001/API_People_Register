@@ -1,3 +1,4 @@
+from typing import Any
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from db import db
@@ -64,7 +65,8 @@ class UserById(MethodView):
 
     
     
-    @blp.response(200, PlainUserSchema, description="Delete an existing user")
+    # @blp.response(200, PlainUserSchema, description="Delete an existing user")
+            #THE CODE UP HERE IS COMMENTED BECAUSE IF INST SO, THE MESSAGE WILL NOT BE PRINTED
     def delete(self, id): #Intended to delete a user by his ID
        
         try:
@@ -111,3 +113,10 @@ class ProfessionalsSerach(MethodView):
 
         else:
             return all_professionals
+@blp.route("/professionals")
+class Professionals(MethodView):
+    @blp.response(200, PlainUserSchema(many=True), description="Get all professions")
+    def get(self):
+        professionals = UsersModel.query.with_entities(UsersModel.profession).distinct().all()
+
+        return professionals
