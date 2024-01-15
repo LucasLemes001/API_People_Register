@@ -32,7 +32,7 @@ class User(MethodView):
 class NewUser(MethodView):
     @blp.arguments(PlainUserSchema)
     @blp.response(200, PlainUserSchema, description="Create a new user")
-    def post(self, user_data): # Intended to create a new user
+    def post(self, user_data):
         
         if UsersModel.query.filter(UsersModel.cpf == user_data["cpf"]).first():
                 abort(409, message="User with this cpf already exists")
@@ -52,7 +52,7 @@ class NewUser(MethodView):
 @blp.route("/users/<int:id>")
 class UserById(MethodView):
     
-    @blp.response(200, PlainUserSchema, description="Get an existing user")
+    @blp.response(200, PlainUserSchema, description="Get an existing user. Delete a Specific User. Update a Specific User")
     
     def get(self, id):  # Intended to return a single user by his ID
         try:
@@ -67,6 +67,7 @@ class UserById(MethodView):
     
     # @blp.response(200, PlainUserSchema, description="Delete an existing user")
             #THE CODE UP HERE IS COMMENTED BECAUSE IF INST SO, THE MESSAGE WILL NOT BE PRINTED
+            #AND BEACUSE THIS ENDPOINT ALREADY HAVE A RESPONSE, WE DONT NEED TO CALL IT AGAIN FOR ANOTHER METHOD
     def delete(self, id): #Intended to delete a user by his ID
        
         try:
@@ -80,7 +81,7 @@ class UserById(MethodView):
             abort(404, message="User not found")
 
 
-    @blp.response(200, PlainUserSchema, description="Update an existing user")
+    
     def put(self, id): # Intended to modify a user by his ID
        
         user = UsersModel.query.get(id)
@@ -105,15 +106,19 @@ class UserById(MethodView):
 
 @blp.route("/professionals/<string:profession>")
 class ProfessionalsSerach(MethodView):
-    @blp.response(200, ProfessionalsSchema(many=True), description="Get all professionals")
-    def get(self, profession):   # Intended to get all professionals listed into the DB
+    @blp.response(200, ProfessionalsSchema(many=True), description="Get all Specific professionals")
+    def get(self, profession):   # Intended to get ALL ESPECIFIC professionals listed into the DB
         all_professionals = UsersModel.query.filter(UsersModel.profession == profession).all()
         if not all_professionals:
-            abort (404, message="Unfortunately there are no professionals with this profession")
+            abort (404, message="Unfortunately there are not professionals with this profession yet.")
 
         else:
             return all_professionals
-@blp.route("/professionals")
+
+
+
+
+@blp.route("/professionslisted") # Intended to return All existent PROFESSIONS in the DB.
 class Professionals(MethodView):
     @blp.response(200, PlainUserSchema(many=True), description="Get all professions")
     def get(self):
