@@ -1,11 +1,11 @@
-from typing import Any
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from db import db
 from models.users import UsersModel
 from resources.schemas import PlainUserSchema, ProfessionalsSchema
-from sqlalchemy.exc import SQLAlchemyError
 from flask import request
+from flask_jwt_extended import jwt_required, get_jwt
+
 '''
 Explaning the code:
  1. First we create a blueprint named "users" and stores the data into a "blp" variable.
@@ -30,6 +30,7 @@ class User(MethodView):
 
 @blp.route("/newusers") #Intended to create a new user
 class NewUser(MethodView):
+    @jwt_required()
     @blp.arguments(PlainUserSchema)
     @blp.response(200, PlainUserSchema, description="Create a new user")
     def post(self, user_data):
@@ -68,6 +69,7 @@ class UserById(MethodView):
     # @blp.response(200, PlainUserSchema, description="Delete an existing user")
             #THE CODE UP HERE IS COMMENTED BECAUSE IF INST SO, THE MESSAGE WILL NOT BE PRINTED
             #AND BEACUSE THIS ENDPOINT ALREADY HAVE A RESPONSE, WE DONT NEED TO CALL IT AGAIN FOR ANOTHER METHOD
+    @jwt_required(fresh=True)
     def delete(self, id): #Intended to delete a user by his ID
        
         try:
@@ -81,7 +83,7 @@ class UserById(MethodView):
             abort(404, message="User not found")
 
 
-    
+    @jwt_required(fresh=True)
     def put(self, id): # Intended to modify a user by his ID
        
         user = UsersModel.query.get(id)
@@ -106,6 +108,7 @@ class UserById(MethodView):
 
 @blp.route("/professionals/<string:profession>")
 class ProfessionalsSerach(MethodView):
+    @jwt_required()
     @blp.response(200, ProfessionalsSchema(many=True), description="Get all Specific professionals")
     def get(self, profession):   # Intended to get ALL ESPECIFIC professionals listed into the DB
         all_professionals = UsersModel.query.filter(UsersModel.profession == profession).all()
@@ -120,6 +123,7 @@ class ProfessionalsSerach(MethodView):
 
 @blp.route("/professionslisted") # Intended to return All existent PROFESSIONS in the DB.
 class Professionals(MethodView):
+    @jwt_required()
     @blp.response(200, PlainUserSchema(many=True), description="Get all professions")
     def get(self):
         professionals = UsersModel.query.with_entities(UsersModel.profession).distinct().all()

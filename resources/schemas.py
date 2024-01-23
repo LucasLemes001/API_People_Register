@@ -34,8 +34,24 @@ class ProfessionalsSchema(Schema):
     email = fields.String(required=True)
 
 
-
+# THE LOGIN SCHEMA, have one ID, that we will not return
+    # username that must string, and returnable,
+    # and a password, that we will not return NEVER.
+    # the password will be hashed before it stores it in the database
+    # and the result will be something like this:
+    # { id: 1, 
+    # "username": "Mary", 
+    # "password": "$pbkdf2-sha256$29000$HYNQipGy9j4H4Pw/h/CeMw$KISYg7CNp8pQpha.qJ/iziwYTI67EkCTZmpX90W2adU"
+    # }
 class LoginSchema(Schema):
     id = fields.Int(load_only=True)
     username = fields.String(required=True)
     password = fields.String(required=True, load_only=True) #Remember to NEVER return passwords
+
+
+# The BlocklistSchemas will take the incoming data and validate it.
+    # only charge the revoked tokens id if we ask to do so
+    # and take the revoked tokens stored in the database
+class BlocklistSchemas(Schema):
+    id = fields.Int(dump_only=True)
+    revoked_token = fields.String(required=True, load_only=True)
