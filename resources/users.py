@@ -30,7 +30,7 @@ class User(MethodView):
 
 @blp.route("/newusers") #Intended to create a new user
 class NewUser(MethodView):
-    @jwt_required()
+    @jwt_required(fresh=True)
     @blp.arguments(PlainUserSchema)
     @blp.response(200, PlainUserSchema, description="Create a new user")
     def post(self, user_data):
@@ -54,7 +54,7 @@ class NewUser(MethodView):
 class UserById(MethodView):
     
     @blp.response(200, PlainUserSchema, description="Get an existing user. Delete a Specific User. Update a Specific User")
-    
+    @jwt_required()
     def get(self, id):  # Intended to return a single user by his ID
         try:
             user = UsersModel.query.get_or_404(id)
@@ -123,7 +123,7 @@ class ProfessionalsSerach(MethodView):
 
 @blp.route("/professionslisted") # Intended to return All existent PROFESSIONS in the DB.
 class Professionals(MethodView):
-    @jwt_required()
+    
     @blp.response(200, PlainUserSchema(many=True), description="Get all professions")
     def get(self):
         professionals = UsersModel.query.with_entities(UsersModel.profession).distinct().all()
