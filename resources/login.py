@@ -2,7 +2,7 @@ from db import db
 from models import LoginModel, BlocklistModel
 from flask_smorest import Blueprint, abort
 from flask.views import MethodView
-from resources.schemas import LoginSchema, BlocklistSchemas
+from resources.schemas import LoginSchema
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, get_jwt
 from passlib.hash import pbkdf2_sha256
 
@@ -108,7 +108,7 @@ class Refresh(MethodView):
 @blp.route("/logout")
 class logout(MethodView):
     @jwt_required()
-    @blp.response(200,BlocklistSchemas)
+    
     def post(self):
         jti = get_jwt()["jti"]
         revoked_token = BlocklistModel(
